@@ -1,0 +1,13 @@
+# dependencies
+/node_modules
+
+# production
+/build
+
+# env files - NEVER commit API keys
+.env
+.env.local
+.env.production
+
+# misc
+.DS_Store
