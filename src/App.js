@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import { generateDescription } from './geminiService';
+import { generateDescription } from './GroqService';
 
 const TONES = [
   { id: 'premium', label: '✨ Premium', desc: 'Luxury & exclusivity' },
@@ -61,7 +61,7 @@ export default function App() {
       setHistory(prev => [{ ...form, output: result, id: Date.now() }, ...prev.slice(0, 4)]);
     } catch (err) {
       if (err.message === 'API_KEY_MISSING') {
-        setError('Gemini API key not found. Add REACT_APP_GEMINI_API_KEY in your .env file and restart the app.');
+        setError('Groq API key not found. Add REACT_APP_GROQ_API_KEY in your .env file and restart the app.');
       } else {
         setError(`Error: ${err.message}`);
       }

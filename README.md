@@ -4,7 +4,7 @@ AI-powered e-commerce product description generator built for **HimShakti Food P
 
 ## 🚀 Features
 
-- Generate SEO-optimized product descriptions using Gemini AI
+- Generate SEO-optimized product descriptions using Groq API
 - Three tone modes: Premium, Traditional, Health-Focused
 - Regenerate to get alternate versions
 - Copy to clipboard in one click
