@@ -14,7 +14,7 @@ AI-powered e-commerce product description generator built for **HimShakti Food P
 ## 🛠️ Tech Stack
 
 - **Frontend:** React 18
-- **AI:** Google Gemini API (gemini-2.0-flash)
+- **AI:** Groq API
 - **Styling:** Custom CSS with CSS Variables
 - **Fonts:** Playfair Display + Inter (Google Fonts)
 
@@ -31,13 +31,13 @@ cd product-desc-generator
 npm install
 ```
 
-### 3. Add your Gemini API key
+### 3. Add your Groq API key
 Create a `.env` file in the root folder:
 ```
-REACT_APP_GEMINI_API_KEY=your_api_key_here
+REACT_APP_GROQ_API_KEY=your_api_key_here
 ```
 
-Get your free API key at: https://aistudio.google.com/app/apikey
+Get your free API key at: https://groq.com
 
 ### 4. Start the app
 ```bash
