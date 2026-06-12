@@ -9,23 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://product-desc-generator-pi.vercel.app',
-  /\.vercel\.app$/   // allow all vercel preview URLs too
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps, curl, Postman)
-    if (!origin) return callback(null, true);
-    const isAllowed = allowedOrigins.some(o =>
-      typeof o === 'string' ? o === origin : o.test(origin)
-    );
-    if (isAllowed) return callback(null, true);
-    return callback(new Error('CORS not allowed for: ' + origin));
-  }
-}));
+app.use(cors()); // allow all origins
 app.use(express.json());
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
