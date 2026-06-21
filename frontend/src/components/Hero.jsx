@@ -1,16 +1,25 @@
-export default function Hero() {
-  return (
-    <section style={styles.hero}>
-      <h1 style={styles.heading}>AI-Powered Product Descriptions</h1>
-      <p style={styles.sub}>Generate compelling, SEO-optimized listings for Amazon & Flipkart in seconds.</p>
-      <button style={styles.btn}>Get Started</button>
-    </section>
-  );
-}
+import { Button } from "./ui";
 
-const styles = {
-  hero: { backgroundColor: "#16213e", color: "#fff", padding: "4rem 2rem", textAlign: "center" },
-  heading: { fontSize: "clamp(1.8rem, 4vw, 2.8rem)", marginBottom: "1rem", color: "#e94560" },
-  sub: { fontSize: "1.1rem", maxWidth: "600px", margin: "0 auto 2rem", color: "#ccc" },
-  btn: { padding: "0.8rem 2rem", backgroundColor: "#e94560", color: "#fff", border: "none", borderRadius: "8px", fontSize: "1rem", cursor: "pointer" },
-};
+export default function Hero({ darkMode }) {
+    return (
+        <section style={{
+            backgroundColor: darkMode ? "#16213e" : "#e94560",
+            color: "#fff",
+            padding: "5rem 2rem",
+            textAlign: "center",
+            transition: "all 0.3s"
+        }}>
+            <h1 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", marginBottom: "1rem", color: "#fff" }}>
+                AI-Powered Product Descriptions
+            </h1>
+            <p style={{ fontSize: "1.1rem", maxWidth: "600px", margin: "0 auto 2rem", color: darkMode ? "#ccc" : "rgba(255,255,255,0.85)" }}>
+                Generate compelling, SEO-optimized listings for Amazon & Flipkart in seconds.
+            </p>
+            <Button
+                label="Get Started"
+                variant={darkMode ? "primary" : "secondary"}
+                onClick={() => window.location.href = "/showcase"}
+            />
+        </section>
+    );
+}

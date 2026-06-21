@@ -10,26 +10,24 @@ const products = [
   { title: "Mountain Berry Jam 300g", description: "Handcrafted berry jam made from wild Himalayan berries. No artificial flavors or colors.", tag: "Preserves" },
 ];
 
-export default function Home() {
+export default function Home({ darkMode, toggleTheme }) {
+  const textColor = darkMode ? "#f0f0f0" : "#1a1a2e";
+  const cardBg = darkMode ? "#1a1a2e" : "#fff";
+  const pageBg = darkMode ? "#0f0f1a" : "#f5f5f5";
+
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Navbar />
-      <Hero />
-      <main style={styles.main}>
-        <h2 style={styles.heading}>Sample Product Listings</h2>
-        <div style={styles.grid}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: pageBg }}>
+      <Navbar darkMode={darkMode} toggleTheme={toggleTheme} />
+      <Hero darkMode={darkMode} />
+      <main style={{ padding: "3rem 2rem", flex: 1 }}>
+        <h2 style={{ textAlign: "center", color: textColor, marginBottom: "2rem", fontSize: "1.8rem" }}>Sample Product Listings</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.5rem", maxWidth: "1100px", margin: "0 auto" }}>
           {products.map((p, i) => (
-            <Card key={i} title={p.title} description={p.description} tag={p.tag} />
+            <Card key={i} title={p.title} description={p.description} tag={p.tag} darkMode={darkMode} />
           ))}
         </div>
       </main>
-      <Footer />
+      <Footer darkMode={darkMode} />
     </div>
   );
 }
-
-const styles = {
-  main: { padding: "3rem 2rem", backgroundColor: "#f5f5f5", flex: 1 },
-  heading: { textAlign: "center", color: "#1a1a2e", marginBottom: "2rem", fontSize: "1.8rem" },
-  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.5rem", maxWidth: "1100px", margin: "0 auto" },
-};

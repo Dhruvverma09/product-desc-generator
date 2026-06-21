@@ -6,5 +6,67 @@
 
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f5f5f5;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Mobile: 375px */
+@media (max-width: 480px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  nav div {
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+}
+
+/* Tablet: 768px */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* Desktop: 1440px */
+@media (min-width: 1440px) {
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* Desktop nav visible, mobile nav hidden */
+.desktop-nav {
+  display: flex !important;
+}
+
+.mobile-nav {
+  display: none !important;
+}
+
+/* Mobile: hide desktop nav, show hamburger */
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .mobile-nav {
+    display: flex !important;
+  }
 }

@@ -1,37 +1,31 @@
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { Button, Input, Toast } from "../components/ui";
 
-export default function Login() {
+export default function Login({ darkMode, toggleTheme }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [toastVisible, setToastVisible] = useState(false);
+  const bg = darkMode ? "#0f0f1a" : "#f5f5f5";
+  const cardBg = darkMode ? "#1a1a2e" : "#fff";
+
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Navbar />
-      <main style={styles.main}>
-        <div style={styles.card}>
-          <h1 style={styles.heading}>Welcome Back</h1>
-          <p style={styles.para}>Sign in to access your product description history and saved listings.</p>
-          <div style={styles.field}>
-            <label style={styles.label}>Email</label>
-            <input style={styles.input} type="email" placeholder="you@example.com" />
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: bg }}>
+      <Navbar darkMode={darkMode} toggleTheme={toggleTheme} />
+      <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
+        <div style={{ backgroundColor: cardBg, borderRadius: "12px", padding: "2.5rem", width: "100%", maxWidth: "420px", boxShadow: "0 4px 20px rgba(0,0,0,0.1)" }}>
+          <h1 style={{ color: "#e94560", marginBottom: "0.5rem" }}>Welcome Back</h1>
+          <p style={{ color: darkMode ? "#aaa" : "#666", fontSize: "0.95rem", marginBottom: "1.5rem" }}>Sign in to access your saved listings.</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "1.5rem" }}>
+            <Input label="Email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Input label="Password" type="password" placeholder="........" value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
-          <div style={styles.field}>
-            <label style={styles.label}>Password</label>
-            <input style={styles.input} type="password" placeholder="••••••••" />
-          </div>
-          <button style={styles.btn}>Login — Coming Soon</button>
+          <Button label="Login - Coming Soon" variant="primary" onClick={() => { setToastVisible(true); setTimeout(() => setToastVisible(false), 3000); }} />
         </div>
       </main>
-      <Footer />
+      <Toast message="Auth coming soon! Stay tuned." type="info" visible={toastVisible} />
+      <Footer darkMode={darkMode} />
     </div>
   );
 }
-
-const styles = {
-  main: { flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem", backgroundColor: "#f5f5f5" },
-  card: { backgroundColor: "#fff", borderRadius: "12px", padding: "2.5rem", width: "100%", maxWidth: "420px", boxShadow: "0 4px 20px rgba(0,0,0,0.1)" },
-  heading: { color: "#e94560", marginBottom: "0.5rem" },
-  para: { color: "#666", fontSize: "0.95rem", marginBottom: "1.5rem", lineHeight: "1.6" },
-  field: { display: "flex", flexDirection: "column", gap: "0.4rem", marginBottom: "1.2rem" },
-  label: { fontSize: "0.9rem", color: "#333", fontWeight: "600" },
-  input: { padding: "0.7rem 1rem", border: "1px solid #ddd", borderRadius: "8px", fontSize: "0.95rem", outline: "none" },
-  btn: { width: "100%", padding: "0.8rem", backgroundColor: "#e94560", color: "#fff", border: "none", borderRadius: "8px", fontSize: "1rem", cursor: "not-allowed", marginTop: "0.5rem" },
-};

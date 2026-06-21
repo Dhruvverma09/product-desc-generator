@@ -1,5 +1,7 @@
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { Button, Toast, Loader } from "../components/ui";
 
 const stats = [
   { label: "Descriptions Generated", value: "0" },
@@ -7,33 +9,40 @@ const stats = [
   { label: "Tones Used", value: "0" },
 ];
 
-export default function Dashboard() {
+export default function Dashboard({ darkMode, toggleTheme }) {
+  const [toastVisible, setToastVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const bg = darkMode ? "#0f0f1a" : "#f5f5f5";
+  const cardBg = darkMode ? "#1a1a2e" : "#fff";
+  const textColor = darkMode ? "#f0f0f0" : "#1a1a2e";
+
+  const handleRefresh = () => {
+    setLoading(true);
+    setTimeout(() => { setLoading(false); setToastVisible(true); setTimeout(() => setToastVisible(false), 3000); }, 1500);
+  };
+
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Navbar />
-      <main style={styles.main}>
-        <h1 style={styles.heading}>Dashboard</h1>
-        <p style={styles.para}>Your generated product descriptions will appear here. Track your listings, manage tone preferences, and copy output directly to your e-commerce store.</p>
-        <div style={styles.grid}>
-          {stats.map((s, i) => (
-            <div key={i} style={styles.card}>
-              <h2 style={styles.value}>{s.value}</h2>
-              <p style={styles.label}>{s.label}</p>
-            </div>
-          ))}
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: bg }}>
+      <Navbar darkMode={darkMode} toggleTheme={toggleTheme} />
+      <main style={{ flex: 1, padding: "4rem 2rem", maxWidth: "900px", margin: "0 auto", width: "100%" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "1rem" }}>
+          <h1 style={{ color: "#e94560" }}>Dashboard</h1>
+          <Button label="Refresh Stats" variant="secondary" onClick={handleRefresh} />
         </div>
+        <p style={{ color: darkMode ? "#aaa" : "#444", lineHeight: "1.8", marginBottom: "2rem" }}>Your generated product descriptions will appear here.</p>
+        {loading ? <Loader size="md" /> : (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.5rem" }}>
+            {stats.map((s, i) => (
+              <div key={i} style={{ backgroundColor: cardBg, borderRadius: "12px", padding: "2rem", textAlign: "center", boxShadow: "0 4px 15px rgba(0,0,0,0.08)" }}>
+                <h2 style={{ fontSize: "2.5rem", color: "#e94560", margin: 0 }}>{s.value}</h2>
+                <p style={{ color: darkMode ? "#aaa" : "#666", marginTop: "0.5rem" }}>{s.label}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </main>
-      <Footer />
+      <Toast message="Stats refreshed!" type="success" visible={toastVisible} />
+      <Footer darkMode={darkMode} />
     </div>
   );
 }
-
-const styles = {
-  main: { flex: 1, padding: "4rem 2rem", maxWidth: "900px", margin: "0 auto", width: "100%" },
-  heading: { color: "#e94560", marginBottom: "1rem" },
-  para: { color: "#444", lineHeight: "1.8", fontSize: "1.05rem", marginBottom: "2rem" },
-  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.5rem" },
-  card: { backgroundColor: "#fff", borderRadius: "12px", padding: "2rem", textAlign: "center", boxShadow: "0 4px 15px rgba(0,0,0,0.08)" },
-  value: { fontSize: "2.5rem", color: "#e94560", margin: 0 },
-  label: { color: "#666", marginTop: "0.5rem", fontSize: "0.95rem" },
-};
