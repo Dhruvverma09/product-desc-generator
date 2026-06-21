@@ -69,3 +69,4 @@ export default function Showcase({ darkMode, toggleTheme }) {
         </div>
     );
 }
+// v1.1 - components integrated across pages
