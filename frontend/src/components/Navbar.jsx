@@ -56,3 +56,4 @@ export default function Navbar({ darkMode, toggleTheme }) {
 const styles = {
     iconBtn: { background: "none", border: "none", fontSize: "1.3rem", cursor: "pointer", padding: "0.2rem 0.5rem", borderRadius: "8px" },
 };
+// v1.1 - mobile responsive navbar with theme toggle
