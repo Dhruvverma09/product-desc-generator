@@ -1,0 +1,31 @@
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const productRoutes = require("./routes/products");
+const generateRoutes = require("./routes/generate");
+const errorHandler = require("./middleware/errorHandler");
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors({ origin: "http://localhost:5173" }));
+app.use(express.json());
+
+// Routes
+app.use("/api/products", productRoutes);
+app.use("/api/generate", generateRoutes);
+
+// Health check
+app.get("/", (req, res) => {
+    res.json({ message: "HimShakti ListingAI Backend is running!" });
+});
+
+// Error handler
+app.use(errorHandler);
+
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
