@@ -57,3 +57,5 @@ himshakti-listingai/
 Full setup and installation instructions will be added once development is complete.
 
 > Built as part of **TBI-GEU Summer Internship Program 2026 (SIP26)** — AI-02 Project.
+
+<!-- backend docs updated -->
