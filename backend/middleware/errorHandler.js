@@ -7,3 +7,4 @@ const errorHandler = (err, req, res, next) => {
 };
 
 module.exports = errorHandler;
+// v1.1 - enhanced error logging
