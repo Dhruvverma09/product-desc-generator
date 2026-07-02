@@ -9,11 +9,12 @@ export default function Navbar({ darkMode, toggleTheme }) {
     const activeColor = "#e94560";
 
     const links = [
-        { to: "/", label: "Home" },
-        { to: "/about", label: "About" },
+        { to: "/",          label: "Home" },
+        { to: "/about",     label: "About" },
+        { to: "/generate",  label: "✨ Generate" },
         { to: "/dashboard", label: "Dashboard" },
-        { to: "/login", label: "Login" },
-        { to: "/showcase", label: "Components" },
+        { to: "/login",     label: "Login" },
+        { to: "/showcase",  label: "Components" },
     ];
 
     return (
@@ -29,7 +30,18 @@ export default function Navbar({ darkMode, toggleTheme }) {
                 {/* Desktop links */}
                 <div style={{ display: "flex", gap: "0.3rem", alignItems: "center" }} className="desktop-nav">
                     {links.map((l) => (
-                        <Link key={l.to} to={l.to} style={{ color: location.pathname === l.to ? activeColor : linkColor, textDecoration: "none", fontSize: "0.9rem", fontWeight: location.pathname === l.to ? "600" : "500", padding: "0.4rem 0.8rem", borderRadius: "6px", backgroundColor: location.pathname === l.to ? (darkMode ? "rgba(233,69,96,0.1)" : "rgba(233,69,96,0.08)") : "transparent", transition: "all 0.2s" }}>
+                        <Link key={l.to} to={l.to} style={{
+                            color: location.pathname === l.to ? activeColor : linkColor,
+                            textDecoration: "none",
+                            fontSize: "0.9rem",
+                            fontWeight: location.pathname === l.to ? "600" : "500",
+                            padding: "0.4rem 0.8rem",
+                            borderRadius: "6px",
+                            backgroundColor: location.pathname === l.to
+                                ? (darkMode ? "rgba(233,69,96,0.1)" : "rgba(233,69,96,0.08)")
+                                : "transparent",
+                            transition: "all 0.2s",
+                        }}>
                             {l.label}
                         </Link>
                     ))}

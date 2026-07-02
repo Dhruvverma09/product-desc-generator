@@ -1,11 +1,15 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const connectDB = require("./config/db");
 const productRoutes = require("./routes/products");
 const generateRoutes = require("./routes/generate");
 const errorHandler = require("./middleware/errorHandler");
 
 dotenv.config();
+
+// Connect to MongoDB
+connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,7 +24,7 @@ app.use("/api/generate", generateRoutes);
 
 // Health check
 app.get("/", (req, res) => {
-    res.json({ message: "HimShakti ListingAI Backend is running!" });
+    res.json({ message: "HimShakti ListingAI Backend is running!", db: "MongoDB Atlas" });
 });
 
 // Error handler

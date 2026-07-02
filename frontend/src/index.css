@@ -1,3 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ── Keyframe animations ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse-border {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0.4); }
+  50%       { box-shadow: 0 0 0 6px rgba(233, 69, 96, 0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+/* ── Utility animations ── */
+.animate-fade-up {
+  animation: fadeInUp 0.45s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s ease forwards;
+}
+
+/* ── Card hover lift ── */
+.card-hover {
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.14) !important;
+}
+
+/* ── Button press ── */
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* ── Skeleton shimmer ── */
+.shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 37%, #f0f0f0 63%);
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,62 +58,37 @@
 }
 
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background-color: #f8f9fa;
+  color: #1a1a2e;
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* Mobile: 375px */
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e94560;
+  border-radius: 10px;
+}
+
+/* Mobile */
 @media (max-width: 480px) {
-  nav {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 1rem;
-  }
-
-  nav div {
-    flex-wrap: wrap;
-    gap: 0.8rem;
-  }
-
   h1 {
-    font-size: 1.6rem;
+    font-size: 1.6rem !important;
   }
 
   h2 {
-    font-size: 1.3rem;
+    font-size: 1.3rem !important;
   }
 }
 
-/* Tablet: 768px */
-@media (max-width: 768px) {
-  nav {
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  .grid {
-    grid-template-columns: 1fr 1fr !important;
-  }
-}
-
-/* Desktop: 1440px */
-@media (min-width: 1440px) {
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-}
-
-/* Desktop nav visible, mobile nav hidden */
-.desktop-nav {
-  display: flex !important;
-}
-
-.mobile-nav {
-  display: none !important;
-}
-
-/* Mobile: hide desktop nav, show hamburger */
 @media (max-width: 768px) {
   .desktop-nav {
     display: none !important;
@@ -68,5 +96,22 @@ body {
 
   .mobile-nav {
     display: flex !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .desktop-nav {
+    display: flex !important;
+  }
+
+  .mobile-nav {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
   }
 }
