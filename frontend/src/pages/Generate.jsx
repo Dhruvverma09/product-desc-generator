@@ -2,13 +2,18 @@ import { useState, useRef } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Loader, Toast } from "../components/ui";
+import API_BASE from "../config";
+
+// Use karo:
+// fetch(`${API_BASE}/api/generate`...
+// fetch(`${API_BASE}/api/products`...
 
 const CATEGORIES = ["Millet Snacks", "Fruit Pickles", "Juices", "Honey", "Spices", "Preserves", "Other"];
 const TONES = ["Premium", "Traditional", "Health-Focused"];
 
 const TONE_DESC = {
-  Premium:          "Luxury, high-end feel — good for gift buyers",
-  Traditional:      "Heritage, authentic Pahadi roots — good for loyal buyers",
+  Premium: "Luxury, high-end feel — good for gift buyers",
+  Traditional: "Heritage, authentic Pahadi roots — good for loyal buyers",
   "Health-Focused": "Wellness, natural, organic feel — good for health buyers",
 };
 
@@ -85,21 +90,21 @@ const DEMOS = [
 ];
 
 export default function Generate({ darkMode, toggleTheme }) {
-  const [form, setForm]       = useState(EMPTY);
-  const [result, setResult]   = useState(null);
+  const [form, setForm] = useState(EMPTY);
+  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [copied, setCopied]   = useState(false);
+  const [copied, setCopied] = useState(false);
   const [history, setHistory] = useState([]);
-  const [toast, setToast]     = useState({ visible: false, message: "", type: "success" });
-  const resultRef             = useRef(null);
+  const [toast, setToast] = useState({ visible: false, message: "", type: "success" });
+  const resultRef = useRef(null);
 
   // theme
-  const bg        = darkMode ? "#0f0f1a" : "#f5f7fa";
-  const cardBg    = darkMode ? "#1a1a2e" : "#ffffff";
-  const text      = darkMode ? "#e8e8f0" : "#1a1a2e";
-  const sub       = darkMode ? "#999"    : "#666";
-  const border    = darkMode ? "#2a2a40" : "#e0e4ef";
-  const inputBg   = darkMode ? "#13131f" : "#f8f9fc";
+  const bg = darkMode ? "#0f0f1a" : "#f5f7fa";
+  const cardBg = darkMode ? "#1a1a2e" : "#ffffff";
+  const text = darkMode ? "#e8e8f0" : "#1a1a2e";
+  const sub = darkMode ? "#999" : "#666";
+  const border = darkMode ? "#2a2a40" : "#e0e4ef";
+  const inputBg = darkMode ? "#13131f" : "#f8f9fc";
 
   const showToast = (msg, type = "success") => {
     setToast({ visible: true, message: msg, type });
@@ -113,7 +118,7 @@ export default function Generate({ darkMode, toggleTheme }) {
     setLoading(true);
     setResult(null);
     try {
-      const res  = await fetch("http://localhost:5000/api/generate", {
+      const res = await fetch("https://himshakti-backend.onrender.com/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -146,7 +151,7 @@ export default function Generate({ darkMode, toggleTheme }) {
     if (!result?.description) return;
     const text = `Product: ${result.productName}\nTone: ${result.tone}\n\n${result.description}`;
     const blob = new Blob([text], { type: "text/plain" });
-    const a    = document.createElement("a");
+    const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = `${result.productName.replace(/\s+/g, "_")}_description.txt`;
     a.click();

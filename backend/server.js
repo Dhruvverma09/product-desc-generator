@@ -33,3 +33,12 @@ app.use(errorHandler);
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+const cors = require("cors");
+
+app.use(cors({
+    origin: [
+        "http://localhost:5173",
+        "https://himshakti-listingai.vercel.app"
+    ]
+}));
