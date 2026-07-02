@@ -39,6 +39,6 @@ const cors = require("cors");
 app.use(cors({
     origin: [
         "http://localhost:5173",
-        "https://himshakti-listingai.vercel.app"
+        "https://product-desc-generator-z98a.vercel.app/"
     ]
 }));
