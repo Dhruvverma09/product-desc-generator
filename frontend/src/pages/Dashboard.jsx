@@ -2,12 +2,8 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Toast, Loader } from "../components/ui";
-import API_BASE from "../config";
 
-// Use karo:
-// fetch(`${API_BASE}/api/generate`...
-// fetch(`${API_BASE}/api/products`...
-const API = "http://localhost:5000/api/products";
+const API = "https://himshakti-backend.onrender.com/api/products";
 
 const CATEGORIES = ["Millet Snacks", "Fruit Pickles", "Juices", "Honey", "Spices", "Preserves", "Other"];
 const TONES = ["Premium", "Traditional", "Health-Focused"];
