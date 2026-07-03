@@ -15,7 +15,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors({ origin: "http://localhost:5173" }));
+// ✅ Yeh daalo
+app.use(cors({
+    origin: [
+        "http://localhost:5173",
+        "https://product-desc-generator-z98a-git-main-dhruvverma09s-projects.vercel.app",
+        "https://product-desc-generator-z98a.vercel.app"
+    ]
+}));
 app.use(express.json());
 
 // Routes
