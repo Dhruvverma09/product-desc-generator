@@ -1,18 +1,22 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar({ darkMode, toggleTheme }) {
+    const { user, logout } = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
     const location = useLocation();
     const bg = darkMode ? "#0a0a1a" : "#ffffff";
     const linkColor = darkMode ? "#e2e2e2" : "#444";
     const activeColor = "#e94560";
+    const sub = darkMode ? "#aaa" : "#666";
 
+    // Login nahi dikhana agar user logged in hai
     const links = [
         { to: "/", label: "Home" },
         { to: "/about", label: "About" },
+        { to: "/generate", label: "✨ Generate" },
         { to: "/dashboard", label: "Dashboard" },
-        { to: "/login", label: "Login" },
         { to: "/showcase", label: "Components" },
     ];
 
@@ -27,13 +31,40 @@ export default function Navbar({ darkMode, toggleTheme }) {
                 </Link>
 
                 {/* Desktop links */}
-                <div style={{ display: "flex", gap: "0.3rem", alignItems: "center" }} className="desktop-nav">
+                <div style={{ display: "flex", gap: "0.3rem", alignItems: "center" }}>
                     {links.map((l) => (
-                        <Link key={l.to} to={l.to} style={{ color: location.pathname === l.to ? activeColor : linkColor, textDecoration: "none", fontSize: "0.9rem", fontWeight: location.pathname === l.to ? "600" : "500", padding: "0.4rem 0.8rem", borderRadius: "6px", backgroundColor: location.pathname === l.to ? (darkMode ? "rgba(233,69,96,0.1)" : "rgba(233,69,96,0.08)") : "transparent", transition: "all 0.2s" }}>
+                        <Link key={l.to} to={l.to} style={{
+                            color: location.pathname === l.to ? activeColor : linkColor,
+                            textDecoration: "none", fontSize: "0.9rem",
+                            fontWeight: location.pathname === l.to ? "600" : "500",
+                            padding: "0.4rem 0.8rem", borderRadius: "6px",
+                            backgroundColor: location.pathname === l.to
+                                ? (darkMode ? "rgba(233,69,96,0.1)" : "rgba(233,69,96,0.08)")
+                                : "transparent",
+                            transition: "all 0.2s"
+                        }}>
                             {l.label}
                         </Link>
                     ))}
-                    <button onClick={toggleTheme} style={{ background: darkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.06)", border: "none", borderRadius: "8px", padding: "0.4rem 0.7rem", cursor: "pointer", fontSize: "1.1rem", marginLeft: "0.5rem" }}>
+
+                    {/* Auth Section */}
+                    {user ? (
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginLeft: "0.5rem" }}>
+                            <span style={{ color: sub, fontSize: "0.85rem" }}>👤 {user.name}</span>
+                            <button
+                                onClick={logout}
+                                style={{ padding: "0.4rem 0.8rem", backgroundColor: "rgba(233,69,96,0.1)", border: "1px solid #e94560", borderRadius: "6px", color: "#e94560", fontSize: "0.82rem", cursor: "pointer" }}
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    ) : (
+                        <Link to="/login" style={{ marginLeft: "0.5rem", padding: "0.4rem 1rem", backgroundColor: "#e94560", color: "#fff", borderRadius: "6px", fontWeight: "600", fontSize: "0.9rem", textDecoration: "none" }}>
+                            Login
+                        </Link>
+                    )}
+
+                    <button onClick={toggleTheme} style={{ background: darkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.06)", border: "none", borderRadius: "8px", padding: "0.4rem 0.7rem", cursor: "pointer", fontSize: "1.1rem", marginLeft: "0.3rem" }}>
                         {darkMode ? "☀️" : "🌙"}
                     </button>
                 </div>
@@ -53,6 +84,15 @@ export default function Navbar({ darkMode, toggleTheme }) {
                             {l.label}
                         </Link>
                     ))}
+                    {user ? (
+                        <button onClick={() => { logout(); setMenuOpen(false); }} style={{ padding: "0.6rem 0.5rem", backgroundColor: "transparent", border: "none", color: "#e94560", fontSize: "1rem", fontWeight: "600", cursor: "pointer", textAlign: "left" }}>
+                            🚪 Logout
+                        </button>
+                    ) : (
+                        <Link to="/login" onClick={() => setMenuOpen(false)} style={{ color: "#e94560", textDecoration: "none", fontSize: "1rem", fontWeight: "600", padding: "0.6rem 0.5rem" }}>
+                            Login
+                        </Link>
+                    )}
                 </div>
             )}
         </nav>

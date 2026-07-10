@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
+const requireAuth = require("../middleware/authMiddleware");
 
 // HimShakti real product catalog
 const HIMSHAKTI_PRODUCTS = [

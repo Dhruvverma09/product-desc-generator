@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Toast, Loader } from "../components/ui";
+import { useAuth } from "../context/AuthContext";
 
 const API = "https://himshakti-backend.onrender.com/api/products";
 
@@ -13,11 +14,12 @@ export default function Dashboard({ darkMode, toggleTheme }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(EMPTY_FORM);
-  const [editId, setEditId] = useState(null);       // null = create mode
+  const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [deleting, setDeleting] = useState(null);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState({ visible: false, message: "", type: "success" });
+  const { token } = useAuth();
 
   const bg = darkMode ? "#0f0f1a" : "#f5f7fa";
   const cardBg = darkMode ? "#1a1a2e" : "#ffffff";
@@ -56,7 +58,10 @@ export default function Dashboard({ darkMode, toggleTheme }) {
       const method = editId ? "PUT" : "POST";
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(form),
       });
       const data = await res.json();
@@ -80,8 +85,10 @@ export default function Dashboard({ darkMode, toggleTheme }) {
   const handleDelete = async (id) => {
     setDeleting(id);
     try {
-      await fetch(`${API}/${id}`, { method: "DELETE" });
-      showToast("Product deleted 🗑️");
+      await fetch(`${API}/${id}`, {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}` }
+      }); showToast("Product deleted 🗑️");
       fetchProducts();
     } catch {
       showToast("Delete failed", "error");
