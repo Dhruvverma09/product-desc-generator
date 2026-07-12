@@ -55,10 +55,6 @@ passport.use(new GoogleStrategy({
 
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
-};
-
-// Initialize after module load
-setTimeout(initGoogleStrategy, 0);
 
 // POST /api/auth/register
 router.post("/register", authLimiter, registerValidation, async (req, res, next) => {
