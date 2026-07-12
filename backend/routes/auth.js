@@ -113,5 +113,49 @@ router.get("/me", require("../middleware/authMiddleware"), async (req, res) => {
 router.post("/logout", (req, res) => {
     res.status(200).json({ success: true, message: "Logged out successfully." });
 });
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const session = require("express-session");
 
+// Google Strategy
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/api/auth/google/callback"
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        let user = await User.findOne({ email: profile.emails[0].value });
+        if (!user) {
+            user = await User.create({
+                name: profile.displayName,
+                email: profile.emails[0].value,
+                password: await require("bcryptjs").hash(Math.random().toString(36), 12),
+            });
+        }
+        const token = require("jsonwebtoken").sign(
+            { id: user._id, email: user.email, name: user.name },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
+        return done(null, { token, user });
+    } catch (err) {
+        return done(err, null);
+    }
+}));
+
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
+
+// Google OAuth routes
+router.get("/google",
+    passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get("/google/callback",
+    passport.authenticate("google", { failureRedirect: `${process.env.FRONTEND_URL}/login?error=oauth_failed`, session: true }),
+    (req, res) => {
+        const { token, user } = req.user;
+        res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}&name=${encodeURIComponent(user.name)}&email=${encodeURIComponent(user.email)}&id=${user._id}`);
+    }
+);
 module.exports = router;

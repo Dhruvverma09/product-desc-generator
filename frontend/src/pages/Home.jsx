@@ -1,8 +1,10 @@
+import API_BASE from "../config";
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Loader, Toast } from "../components/ui";
 import { useNavigate } from "react-router-dom";
+
 
 const HIMSHAKTI_PRODUCTS = [
   { name: "Barnyard Millet Namkeen", category: "Millet Snacks", features: "Gluten-free, high fibre, no maida, traditional Pahadi recipe, FSSAI certified" },
@@ -16,11 +18,11 @@ const HIMSHAKTI_PRODUCTS = [
 const CATEGORY_EMOJI = {
   "Millet Snacks": "🌾",
   "Fruit Pickles": "🍇",
-  "Juices":        "🌸",
-  "Honey":         "🍯",
-  "Spices":        "🌶️",
-  "Preserves":     "🫙",
-  "Other":         "📦",
+  "Juices": "🌸",
+  "Honey": "🍯",
+  "Spices": "🌶️",
+  "Preserves": "🫙",
+  "Other": "📦",
 };
 
 const HOW_IT_WORKS = [
@@ -31,8 +33,8 @@ const HOW_IT_WORKS = [
 
 export default function Home({ darkMode, toggleTheme }) {
   const [products, setProducts] = useState(HIMSHAKTI_PRODUCTS); // fallback to static list
-  const [loading, setLoading]   = useState(true);
-  const [toast, setToast]       = useState({ visible: false, message: "", type: "success" });
+  const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState({ visible: false, message: "", type: "success" });
   const navigate = useNavigate();
 
   const showToast = (msg, type = "success") => {
@@ -41,7 +43,7 @@ export default function Home({ darkMode, toggleTheme }) {
   };
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    fetch(`${API_BASE}/api/products`)
       .then((r) => r.json())
       .then((d) => {
         if (d.data && d.data.length > 0) setProducts(d.data);
@@ -53,12 +55,12 @@ export default function Home({ darkMode, toggleTheme }) {
       });
   }, []);
 
-  const bg      = darkMode ? "#0f0f1a" : "#f5f7fa";
-  const text    = darkMode ? "#e8e8f0" : "#1a1a2e";
-  const sub     = darkMode ? "#999"    : "#666";
-  const cardBg  = darkMode ? "#1a1a2e" : "#ffffff";
-  const border  = darkMode ? "#2a2a40" : "#e0e4ef";
-  const secBg   = darkMode ? "#13131f" : "#ffffff";
+  const bg = darkMode ? "#0f0f1a" : "#f5f7fa";
+  const text = darkMode ? "#e8e8f0" : "#1a1a2e";
+  const sub = darkMode ? "#999" : "#666";
+  const cardBg = darkMode ? "#1a1a2e" : "#ffffff";
+  const border = darkMode ? "#2a2a40" : "#e0e4ef";
+  const secBg = darkMode ? "#13131f" : "#ffffff";
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: bg }}>

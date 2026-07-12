@@ -20,6 +20,16 @@ app.use(cors({
         "https://product-desc-generator-z98a.vercel.app"
     ]
 }));
+const session = require("express-session");
+const passport = require("passport");
+
+app.use(session({
+    secret: process.env.SESSION_SECRET || "himshakti_secret",
+    resave: false,
+    saveUninitialized: false,
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);

@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Showcase from "./pages/Showcase";
 import Generate from "./pages/Generate";
 import ProtectedRoute from "./components/ProtectedRoute";
+import OAuthSuccess from "./pages/OAuthSuccess";
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/about" element={<About darkMode={darkMode} toggleTheme={toggleTheme} />} />
           <Route path="/login" element={<Login darkMode={darkMode} toggleTheme={toggleTheme} />} />
           <Route path="/showcase" element={<Showcase darkMode={darkMode} toggleTheme={toggleTheme} />} />
+          <Route path="/oauth-success" element={<OAuthSuccess />} />
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <Dashboard darkMode={darkMode} toggleTheme={toggleTheme} />

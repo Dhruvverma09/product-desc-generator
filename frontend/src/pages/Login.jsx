@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
@@ -33,20 +33,12 @@ export default function Login({ darkMode, toggleTheme }) {
   const handleSubmit = async () => {
     setError("");
     setSuccess("");
+    if (!form.email || !form.password) { setError("Email aur Password required hai!"); return; }
+    if (isRegister && !form.name) { setError("Name required hai!"); return; }
 
-    if (!form.email || !form.password) {
-      setError("Email aur Password required hai!"); return;
-    }
-    if (isRegister && !form.name) {
-      setError("Name required hai!"); return;
-    }
-
-    let result;
-    if (isRegister) {
-      result = await register(form.name, form.email, form.password);
-    } else {
-      result = await login(form.email, form.password);
-    }
+    const result = isRegister
+      ? await register(form.name, form.email, form.password)
+      : await login(form.email, form.password);
 
     if (result.success) {
       setSuccess(isRegister ? "Account bana gaya! 🎉" : "Login successful! ✅");
@@ -93,34 +85,16 @@ export default function Login({ darkMode, toggleTheme }) {
             {isRegister && (
               <div>
                 <label style={labelStyle}>Full Name</label>
-                <input
-                  style={inputStyle}
-                  placeholder="Dhruv Verma"
-                  value={form.name}
-                  onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
-                />
+                <input style={inputStyle} placeholder="Dhruv Verma" value={form.name} onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))} />
               </div>
             )}
             <div>
               <label style={labelStyle}>Email</label>
-              <input
-                style={inputStyle}
-                type="email"
-                placeholder="you@example.com"
-                value={form.email}
-                onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))}
-              />
+              <input style={inputStyle} type="email" placeholder="you@example.com" value={form.email} onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))} />
             </div>
             <div>
               <label style={labelStyle}>Password</label>
-              <input
-                style={inputStyle}
-                type="password"
-                placeholder="Min 6 characters"
-                value={form.password}
-                onChange={(e) => setForm(f => ({ ...f, password: e.target.value }))}
-                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-              />
+              <input style={inputStyle} type="password" placeholder="Min 6 characters" value={form.password} onChange={(e) => setForm(f => ({ ...f, password: e.target.value }))} onKeyDown={(e) => e.key === "Enter" && handleSubmit()} />
             </div>
           </div>
 
@@ -133,20 +107,30 @@ export default function Login({ darkMode, toggleTheme }) {
             {loading ? "Please wait..." : (isRegister ? "✨ Create Account" : "🚀 Login")}
           </button>
 
+          {/* Divider */}
+          <div style={{ textAlign: "center", margin: "1rem 0", color: sub }}>— ya —</div>
+
+          {/* Google Button */}
+          <a
+            href="https://himshakti-backend.onrender.com/api/auth/google"
+            style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.7rem", width: "100%", padding: "0.85rem", backgroundColor: "#fff", color: "#333", border: "1px solid #ddd", borderRadius: "8px", fontSize: "0.95rem", fontWeight: "600", textDecoration: "none", boxSizing: "border-box" }}
+          >
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="Google" />
+            Sign in with Google
+          </a>
+
           {/* Toggle */}
-          <p style={{ textAlign: "center", color: sub, fontSize: "0.9rem", margin: 0 }}>
+          <p style={{ textAlign: "center", color: sub, fontSize: "0.9rem", margin: "1rem 0 0" }}>
             {isRegister ? "Already account hai? " : "Account nahi hai? "}
-            <span
-              onClick={() => { setIsRegister(!isRegister); setError(""); setSuccess(""); }}
-              style={{ color: "#e94560", fontWeight: "600", cursor: "pointer" }}
-            >
+            <span onClick={() => { setIsRegister(!isRegister); setError(""); setSuccess(""); }} style={{ color: "#e94560", fontWeight: "600", cursor: "pointer" }}>
               {isRegister ? "Login karo" : "Register karo"}
             </span>
           </p>
-        </div>
-      </main>
 
-      <Footer darkMode={darkMode} />
-    </div>
+        </div>
+      </main >
+
+    <Footer darkMode={darkMode} />
+    </div >
   );
 }
