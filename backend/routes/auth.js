@@ -4,9 +4,11 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
 const rateLimit = require("express-rate-limit");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
 
-// Rate limiter — max 5 requests per 15 min
+// Rate limiter
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 50,
@@ -25,6 +27,40 @@ const loginValidation = [
     body("password").notEmpty().withMessage("Password is required"),
 ];
 
+// Google Strategy — lazy init taaki dotenv pehle load ho
+const initGoogleStrategy = () => {
+    passport.use(new GoogleStrategy({
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: "/api/auth/google/callback"
+    }, async (accessToken, refreshToken, profile, done) => {
+        try {
+            let user = await User.findOne({ email: profile.emails[0].value });
+            if (!user) {
+                user = await User.create({
+                    name: profile.displayName,
+                    email: profile.emails[0].value,
+                    password: await bcrypt.hash(Math.random().toString(36), 12),
+                });
+            }
+            const token = jwt.sign(
+                { id: user._id, email: user.email, name: user.name },
+                process.env.JWT_SECRET,
+                { expiresIn: "7d" }
+            );
+            return done(null, { token, user });
+        } catch (err) {
+            return done(err, null);
+        }
+    }));
+
+    passport.serializeUser((user, done) => done(null, user));
+    passport.deserializeUser((user, done) => done(null, user));
+};
+
+// Initialize after module load
+setTimeout(initGoogleStrategy, 0);
+
 // POST /api/auth/register
 router.post("/register", authLimiter, registerValidation, async (req, res, next) => {
     try {
@@ -32,28 +68,18 @@ router.post("/register", authLimiter, registerValidation, async (req, res, next)
         if (!errors.isEmpty()) {
             return res.status(400).json({ success: false, message: errors.array()[0].msg });
         }
-
         const { name, email, password } = req.body;
-
-        // Check duplicate email
         const existing = await User.findOne({ email });
         if (existing) {
             return res.status(400).json({ success: false, message: "Email already registered." });
         }
-
-        // Hash password
         const hashedPassword = await bcrypt.hash(password, 12);
-
-        // Create user
         const user = await User.create({ name, email, password: hashedPassword });
-
-        // Generate JWT
         const token = jwt.sign(
             { id: user._id, email: user.email, name: user.name },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
-
         res.status(201).json({
             success: true,
             message: "Registration successful!",
@@ -69,28 +95,20 @@ router.post("/login", authLimiter, loginValidation, async (req, res, next) => {
         if (!errors.isEmpty()) {
             return res.status(400).json({ success: false, message: errors.array()[0].msg });
         }
-
         const { email, password } = req.body;
-
-        // Find user
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ success: false, message: "Invalid email or password." });
         }
-
-        // Check password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ success: false, message: "Invalid email or password." });
         }
-
-        // Generate JWT
         const token = jwt.sign(
             { id: user._id, email: user.email, name: user.name },
             process.env.JWT_SECRET,
             { expiresIn: "7d" }
         );
-
         res.status(200).json({
             success: true,
             message: "Login successful!",
@@ -99,7 +117,7 @@ router.post("/login", authLimiter, loginValidation, async (req, res, next) => {
     } catch (err) { next(err); }
 });
 
-// GET /api/auth/me — protected route
+// GET /api/auth/me
 router.get("/me", require("../middleware/authMiddleware"), async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select("-password");
@@ -113,38 +131,6 @@ router.get("/me", require("../middleware/authMiddleware"), async (req, res) => {
 router.post("/logout", (req, res) => {
     res.status(200).json({ success: true, message: "Logged out successfully." });
 });
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const session = require("express-session");
-
-// Google Strategy
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/api/auth/google/callback"
-}, async (accessToken, refreshToken, profile, done) => {
-    try {
-        let user = await User.findOne({ email: profile.emails[0].value });
-        if (!user) {
-            user = await User.create({
-                name: profile.displayName,
-                email: profile.emails[0].value,
-                password: await require("bcryptjs").hash(Math.random().toString(36), 12),
-            });
-        }
-        const token = require("jsonwebtoken").sign(
-            { id: user._id, email: user.email, name: user.name },
-            process.env.JWT_SECRET,
-            { expiresIn: "7d" }
-        );
-        return done(null, { token, user });
-    } catch (err) {
-        return done(err, null);
-    }
-}));
-
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
 
 // Google OAuth routes
 router.get("/google",
@@ -152,10 +138,14 @@ router.get("/google",
 );
 
 router.get("/google/callback",
-    passport.authenticate("google", { failureRedirect: `${process.env.FRONTEND_URL}/login?error=oauth_failed`, session: true }),
+    passport.authenticate("google", {
+        failureRedirect: `${process.env.FRONTEND_URL}/login?error=oauth_failed`,
+        session: true
+    }),
     (req, res) => {
         const { token, user } = req.user;
         res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}&name=${encodeURIComponent(user.name)}&email=${encodeURIComponent(user.email)}&id=${user._id}`);
     }
 );
+
 module.exports = router;

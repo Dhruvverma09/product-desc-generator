@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const session = require("express-session");
+const passport = require("passport");
 const connectDB = require("./config/db");
 const productRoutes = require("./routes/products");
 const generateRoutes = require("./routes/generate");
@@ -20,8 +22,6 @@ app.use(cors({
         "https://product-desc-generator-z98a.vercel.app"
     ]
 }));
-const session = require("express-session");
-const passport = require("passport");
 
 app.use(session({
     secret: process.env.SESSION_SECRET || "himshakti_secret",
