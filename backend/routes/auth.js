@@ -11,7 +11,7 @@ const User = require("../models/User");
 // Rate limiter
 const authLimiter = rateLimit({
     windowMs: 1 * 60 * 1000,  // 1 minute
-    max: 100,  // 100 requests
+    max: 5,  // 100 requests
     message: { success: false, message: "Too many attempts. Try again after 15 minutes." },
 });
 
