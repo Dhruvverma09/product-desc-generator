@@ -26,4 +26,4 @@ export default function OAuthSuccess() {
             <p style={{ fontSize: "1.2rem", color: "#e94560" }}>Logging you in... ⏳</p>
         </div>
     );
-}
+}   

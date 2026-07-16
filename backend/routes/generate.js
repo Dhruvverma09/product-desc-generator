@@ -28,31 +28,29 @@ Generate a compelling product description for:
 
 Write a 3-4 sentence product description. Be specific, persuasive, mention Amazon/Flipkart suitability. No bullet points, just paragraph.`;
 
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
-            },
-            body: JSON.stringify({
-                model: "llama-3.1-8b-instant",
-                messages: [{ role: "user", content: prompt }],
-                max_tokens: 300,
-                temperature: 0.7,
-            }),
-        });
+        const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: { maxOutputTokens: 300, temperature: 0.7 }
+                }),
+            }
+        );
 
-        const groqData = await response.json();
+        const geminiData = await response.json();
 
         if (!response.ok) {
-            console.error("Groq API Error:", groqData);
+            console.error("Gemini API Error:", geminiData);
             return res.status(500).json({
                 success: false,
-                message: groqData.error?.message || "Groq API failed"
+                message: geminiData.error?.message || "Gemini API failed"
             });
         }
 
-        const description = groqData.choices?.[0]?.message?.content?.trim();
+        const description = geminiData.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
 
         if (!description) {
             return res.status(500).json({ success: false, message: "AI generation failed" });
