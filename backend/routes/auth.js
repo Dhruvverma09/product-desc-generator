@@ -10,8 +10,8 @@ const User = require("../models/User");
 
 // Rate limiter
 const authLimiter = rateLimit({
-    windowMs: 1 * 60 * 1000,  // 1 minute
-    max: 5,  // 100 requests
+    windowMs: 1 * 60 * 1000,
+    max: 5,
     message: { success: false, message: "Too many attempts. Try again after 15 minutes." },
 });
 
@@ -27,34 +27,36 @@ const loginValidation = [
     body("password").notEmpty().withMessage("Password is required"),
 ];
 
-// Google Strategy — lazy init taaki dotenv pehle load ho
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://himshakti-backend.onrender.com/api/auth/google/callback"
-}, async (accessToken, refreshToken, profile, done) => {
-    try {
-        let user = await User.findOne({ email: profile.emails[0].value });
-        if (!user) {
-            user = await User.create({
-                name: profile.displayName,
-                email: profile.emails[0].value,
-                password: await bcrypt.hash(Math.random().toString(36), 12),
-            });
+// Google Strategy — only register if keys are present (prevents crash when missing)
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    passport.use(new GoogleStrategy({
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: "https://himshakti-backend.onrender.com/api/auth/google/callback"
+    }, async (_accessToken, refreshToken, profile, done) => {
+        try {
+            let user = await User.findOne({ email: profile.emails[0].value });
+            if (!user) {
+                user = await User.create({
+                    name: profile.displayName,
+                    email: profile.emails[0].value,
+                    password: await bcrypt.hash(Math.random().toString(36), 12),
+                });
+            }
+            const token = jwt.sign(
+                { id: user._id, email: user.email, name: user.name },
+                process.env.JWT_SECRET,
+                { expiresIn: "7d" }
+            );
+            return done(null, { token, user });
+        } catch (err) {
+            return done(err, null);
         }
-        const token = jwt.sign(
-            { id: user._id, email: user.email, name: user.name },
-            process.env.JWT_SECRET,
-            { expiresIn: "7d" }
-        );
-        return done(null, { token, user });
-    } catch (err) {
-        return done(err, null);
-    }
-}));
+    }));
 
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
+    passport.serializeUser((user, done) => done(null, user));
+    passport.deserializeUser((user, done) => done(null, user));
+}
 
 // POST /api/auth/register
 router.post("/register", authLimiter, registerValidation, async (req, res, next) => {
@@ -127,22 +129,24 @@ router.post("/logout", (req, res) => {
     res.status(200).json({ success: true, message: "Logged out successfully." });
 });
 
-// Google OAuth routes
-router.get("/google",
-    passport.authenticate("google", {
-        scope: ["profile", "email"]
-    })
-);
+// Google OAuth routes — only mount if strategy is configured
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    router.get("/google",
+        passport.authenticate("google", {
+            scope: ["profile", "email"]
+        })
+    );
 
-router.get("/google/callback",
-    passport.authenticate("google", {
-        failureRedirect: `${process.env.FRONTEND_URL}/login?error=oauth_failed`,
-        session: true
-    }),
-    (req, res) => {
-        const { token, user } = req.user;
-        res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}&name=${encodeURIComponent(user.name)}&email=${encodeURIComponent(user.email)}&id=${user._id}`);
-    }
-);
+    router.get("/google/callback",
+        passport.authenticate("google", {
+            failureRedirect: `${process.env.FRONTEND_URL}/login?error=oauth_failed`,
+            session: true
+        }),
+        (req, res) => {
+            const { token, user } = req.user;
+            res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}&name=${encodeURIComponent(user.name)}&email=${encodeURIComponent(user.email)}&id=${user._id}`);
+        }
+    );
+}
 
 module.exports = router;
