@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 import { Toast, Loader } from "../components/ui";
 import { useAuth } from "../context/AuthContext";
 
-const API = "https://himshakti-backend.onrender.com/api/products";
+const API = "https://product-desc-generator-myyk.onrender.com/api/products";
 
 const CATEGORIES = ["Millet Snacks", "Fruit Pickles", "Juices", "Honey", "Spices", "Preserves", "Other"];
 const TONES = ["Premium", "Traditional", "Health-Focused"];

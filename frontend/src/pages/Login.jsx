@@ -112,7 +112,7 @@ export default function Login({ darkMode, toggleTheme }) {
 
           {/* Google Button */}
           <a
-            href="https://himshakti-backend.onrender.com/api/auth/google"
+            href="https://.onrender.com/api/auth/google"
             style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.7rem", width: "100%", padding: "0.85rem", backgroundColor: "#fff", color: "#333", border: "1px solid #ddd", borderRadius: "8px", fontSize: "0.95rem", fontWeight: "600", textDecoration: "none", boxSizing: "border-box" }}
           >
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="Google" />
@@ -130,7 +130,7 @@ export default function Login({ darkMode, toggleTheme }) {
         </div>
       </main >
 
-    <Footer darkMode={darkMode} />
+      <Footer darkMode={darkMode} />
     </div >
   );
 }

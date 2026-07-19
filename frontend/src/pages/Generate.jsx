@@ -118,7 +118,7 @@ export default function Generate({ darkMode, toggleTheme }) {
     setLoading(true);
     setResult(null);
     try {
-      const res = await fetch("https://himshakti-backend.onrender.com/api/generate", {
+      const res = await fetch("https://product-desc-generator-myyk.onrender.com/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
