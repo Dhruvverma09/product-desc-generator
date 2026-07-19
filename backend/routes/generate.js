@@ -35,11 +35,14 @@ Write a 3-4 sentence product description. Be specific, persuasive, mention Amazo
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: { maxOutputTokens: 300, temperature: 0.7 }
+                    generationConfig: {
+                        maxOutputTokens: 1024,
+                        temperature: 0.7,
+                        thinkingConfig: { thinkingBudget: 0 }
+                    }
                 }),
             }
         );
-
         const geminiData = await response.json();
 
         if (!response.ok) {
