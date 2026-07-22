@@ -31,7 +31,7 @@ export default function Navbar({ darkMode, toggleTheme }) {
                 </Link>
 
                 {/* Desktop links */}
-                <div style={{ display: "flex", gap: "0.3rem", alignItems: "center" }}>
+                <div className="desktop-nav" style={{ display: "flex", gap: "0.3rem", alignItems: "center" }}>
                     {links.map((l) => (
                         <Link key={l.to} to={l.to} style={{
                             color: location.pathname === l.to ? activeColor : linkColor,

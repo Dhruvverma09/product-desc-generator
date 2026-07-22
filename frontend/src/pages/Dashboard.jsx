@@ -20,7 +20,14 @@ export default function Dashboard({ darkMode, toggleTheme }) {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState({ visible: false, message: "", type: "success" });
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 480);
   const { token } = useAuth();
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 480);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const bg = darkMode ? "#0f0f1a" : "#f5f7fa";
   const cardBg = darkMode ? "#1a1a2e" : "#ffffff";
@@ -82,7 +89,7 @@ export default function Dashboard({ darkMode, toggleTheme }) {
     }
   };
 
-  // ── DELETE — now opens confirmation modal instead of deleting directly ──
+  // ── DELETE — opens confirmation modal instead of deleting directly ──
   const askDelete = (product) => setConfirmDelete(product);
 
   const confirmDeleteAction = async () => {
@@ -139,7 +146,7 @@ export default function Dashboard({ darkMode, toggleTheme }) {
       <main style={{ flex: 1, padding: "2rem 1.5rem", maxWidth: "960px", margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
 
         {/* Stats */}
-        <div style={{ display: "grid", gridTemplateColumns: window.innerWidth < 480 ? "1fr" : "repeat(3,1fr)", gap: "1rem", marginBottom: "1.5rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)", gap: "1rem", marginBottom: "1.5rem" }}>
           {stats.map((s) => (
             <div key={s.label} style={{ ...card, marginBottom: 0, textAlign: "center", padding: "1.2rem" }}>
               <div style={{ fontSize: "1.6rem" }}>{s.icon}</div>
@@ -173,7 +180,7 @@ export default function Dashboard({ darkMode, toggleTheme }) {
             <h3 style={{ color: "#e94560", margin: "0 0 1.2rem", fontSize: "0.95rem", fontWeight: "700" }}>
               {editId ? "✏️ Edit Product" : "➕ Add New Product"}
             </h3>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.9rem", marginBottom: "0.9rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "0.9rem", marginBottom: "0.9rem" }}>
               <div>
                 <label style={labelStyle}>Product Name *</label>
                 <input style={inputStyle} placeholder="e.g. Himalayan Honey" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
@@ -203,7 +210,7 @@ export default function Dashboard({ darkMode, toggleTheme }) {
               <label style={labelStyle}>Key Features</label>
               <textarea style={{ ...inputStyle, minHeight: "70px", resize: "vertical" }} placeholder="e.g. Raw, unfiltered, FSSAI certified..." value={form.features} onChange={(e) => setForm((f) => ({ ...f, features: e.target.value }))} />
             </div>
-            <div style={{ display: "flex", gap: "0.7rem" }}>
+            <div style={{ display: "flex", gap: "0.7rem", flexWrap: "wrap" }}>
               <button
                 onClick={handleSave}
                 disabled={saving}
@@ -232,7 +239,7 @@ export default function Dashboard({ darkMode, toggleTheme }) {
           <div style={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}>
             {products.map((p) => (
               <div key={p._id} style={{ ...card, marginBottom: 0, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.8rem" }}>
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, minWidth: "200px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap", marginBottom: "0.3rem" }}>
                     <h3 style={{ color: text, margin: 0, fontSize: "0.95rem", fontWeight: "700" }}>{p.name}</h3>
                     <span style={{ backgroundColor: "rgba(233,69,96,0.1)", color: "#e94560", padding: "0.15rem 0.6rem", borderRadius: "12px", fontSize: "0.73rem", fontWeight: "600" }}>{p.tone}</span>

@@ -6,8 +6,7 @@ export default function Footer({ darkMode }) {
     return (
         <footer style={{ backgroundColor: bg, color: "#aaa", padding: "3rem 2rem 1.5rem" }}>
             <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "3rem", marginBottom: "2.5rem" }}>
-
+                <div style={{ display: "grid", gridTemplateColumns: window.innerWidth < 640 ? "1fr" : "2fr 1fr 1fr", gap: window.innerWidth < 640 ? "2rem" : "3rem", marginBottom: "2.5rem" }}>
                     {/* Brand */}
                     <div>
                         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>

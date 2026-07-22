@@ -2,23 +2,57 @@
 
 /* ── Keyframe animations ── */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes pulse-border {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0.4); }
-  50%       { box-shadow: 0 0 0 6px rgba(233, 69, 96, 0); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(233, 69, 96, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgba(233, 69, 96, 0);
+  }
 }
 
 @keyframes shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
+  0% {
+    background-position: -400px 0;
+  }
+
+  100% {
+    background-position: 400px 0;
+  }
+}
+
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 /* ── Utility animations ── */
@@ -34,9 +68,10 @@
 .card-hover {
   transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
+
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.14) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14) !important;
 }
 
 /* ── Button press ── */
