@@ -276,24 +276,23 @@ export default function Generate({ darkMode, toggleTheme }) {
           {/* Tone */}
           <div style={{ marginBottom: "1.6rem" }}>
             <label style={labelStyle}>Tone Style</label>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "0.8rem" }}>
-              {TONES.map((t) => {
-                const active = form.tone === t;
-                return (
-                  <div
-                    key={t}
-                    onClick={() => setForm((f) => ({ ...f, tone: t }))}
-                    style={{
-                      padding: "0.9rem 0.7rem", borderRadius: "10px", cursor: "pointer", textAlign: "center",
-                      border: `2px solid ${active ? "#e94560" : border}`,
-                      backgroundColor: active ? "rgba(233,69,96,0.08)" : inputBg,
-                    }}
-                  >
-                    <div style={{ fontWeight: "700", fontSize: "0.85rem", color: active ? "#e94560" : text, marginBottom: "0.25rem" }}>{t}</div>
-                    <div style={{ fontSize: "0.72rem", color: sub, lineHeight: "1.3" }}>{TONE_DESC[t]}</div>
-                  </div>
-                );
-              })}
+            <div style={{ display: "grid", gridTemplateColumns: window.innerWidth < 480 ? "1fr" : "repeat(3,1fr)", gap: "0.8rem" }}>              {TONES.map((t) => {
+              const active = form.tone === t;
+              return (
+                <div
+                  key={t}
+                  onClick={() => setForm((f) => ({ ...f, tone: t }))}
+                  style={{
+                    padding: "0.9rem 0.7rem", borderRadius: "10px", cursor: "pointer", textAlign: "center",
+                    border: `2px solid ${active ? "#e94560" : border}`,
+                    backgroundColor: active ? "rgba(233,69,96,0.08)" : inputBg,
+                  }}
+                >
+                  <div style={{ fontWeight: "700", fontSize: "0.85rem", color: active ? "#e94560" : text, marginBottom: "0.25rem" }}>{t}</div>
+                  <div style={{ fontSize: "0.72rem", color: sub, lineHeight: "1.3" }}>{TONE_DESC[t]}</div>
+                </div>
+              );
+            })}
             </div>
           </div>
 
