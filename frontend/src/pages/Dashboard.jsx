@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Toast, Loader } from "../components/ui";
+import { Toast, Loader, Modal, Button } from "../components/ui";
 import { useAuth } from "../context/AuthContext";
 
 const API = "https://product-desc-generator-myyk.onrender.com/api/products";
@@ -19,6 +19,7 @@ export default function Dashboard({ darkMode, toggleTheme }) {
   const [deleting, setDeleting] = useState(null);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState({ visible: false, message: "", type: "success" });
+  const [confirmDelete, setConfirmDelete] = useState(null);
   const { token } = useAuth();
 
   const bg = darkMode ? "#0f0f1a" : "#f5f7fa";
@@ -81,14 +82,20 @@ export default function Dashboard({ darkMode, toggleTheme }) {
     }
   };
 
-  // ── DELETE ─────────────────────────────────────────────────────
-  const handleDelete = async (id) => {
+  // ── DELETE — now opens confirmation modal instead of deleting directly ──
+  const askDelete = (product) => setConfirmDelete(product);
+
+  const confirmDeleteAction = async () => {
+    if (!confirmDelete) return;
+    const id = confirmDelete._id;
+    setConfirmDelete(null);
     setDeleting(id);
     try {
       await fetch(`${API}/${id}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` }
-      }); showToast("Product deleted 🗑️");
+      });
+      showToast("Product deleted 🗑️");
       fetchProducts();
     } catch {
       showToast("Delete failed", "error");
@@ -132,7 +139,7 @@ export default function Dashboard({ darkMode, toggleTheme }) {
       <main style={{ flex: 1, padding: "2rem 1.5rem", maxWidth: "960px", margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
 
         {/* Stats */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "1rem", marginBottom: "1.5rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: window.innerWidth < 480 ? "1fr" : "repeat(3,1fr)", gap: "1rem", marginBottom: "1.5rem" }}>
           {stats.map((s) => (
             <div key={s.label} style={{ ...card, marginBottom: 0, textAlign: "center", padding: "1.2rem" }}>
               <div style={{ fontSize: "1.6rem" }}>{s.icon}</div>
@@ -244,7 +251,7 @@ export default function Dashboard({ darkMode, toggleTheme }) {
                     ✏️ Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(p._id)}
+                    onClick={() => askDelete(p)}
                     disabled={deleting === p._id}
                     style={{ padding: "0.4rem 0.9rem", backgroundColor: deleting === p._id ? "#888" : "rgba(233,69,96,0.1)", border: "1px solid #e94560", borderRadius: "6px", color: "#e94560", fontSize: "0.82rem", cursor: "pointer", fontFamily: "inherit" }}
                   >
@@ -256,6 +263,17 @@ export default function Dashboard({ darkMode, toggleTheme }) {
           </div>
         )}
       </main>
+
+      {/* Delete confirmation modal */}
+      <Modal isOpen={!!confirmDelete} title="Delete Product?" onClose={() => setConfirmDelete(null)}>
+        <p style={{ color: "#444", marginBottom: "1.2rem" }}>
+          Are you sure you want to delete <strong>{confirmDelete?.name}</strong>? This cannot be undone.
+        </p>
+        <div style={{ display: "flex", gap: "0.7rem" }}>
+          <Button label="Delete" variant="danger" onClick={confirmDeleteAction} />
+          <Button label="Cancel" variant="secondary" onClick={() => setConfirmDelete(null)} />
+        </div>
+      </Modal>
 
       <Toast message={toast.message} type={toast.type} visible={toast.visible} />
       <Footer darkMode={darkMode} />
